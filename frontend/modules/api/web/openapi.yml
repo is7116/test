@@ -1,0 +1,130 @@
+openapi: 3.0.0
+
+info:
+  title: API
+  description: API
+  version: 1.0.0
+
+tags:
+  - name: Service
+    description: Услуги
+
+servers:
+  - url: http://localhost:3000/api
+    description: localhost
+
+paths:
+  /service:
+    get:
+      tags:
+        - Service
+      summary: Список
+      description: Список услуг с фильтрами
+      security:
+        - access: []
+      parameters:
+        - name: status
+          in: query
+          description: Фильтр по статусу
+        - name: city_id
+          in: query
+          description: Фильтр по городу
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Service"
+        default:
+          description: Error (40X,500)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /service/view:
+    get:
+      tags:
+        - Service
+      summary: Услуга
+      description: Информация о конкретной услуге
+      security:
+        - access: []
+      parameters:
+        - name: id
+          in: query
+          description: ID
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Service"
+        default:
+          description: Error (40X,500)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+
+  securitySchemes:
+    access:
+      type: http
+      scheme: bearer
+      bearerFormat: auth_key пользователя
+
+  schemas:
+
+    Error:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Наименование
+        message:
+          type: string
+          description: Сообщение
+        code:
+          type: integer
+          description: Код
+        status:
+          type: integer
+          description: HTTP статус ответа
+        type:
+          type: integer
+          description: Тип
+
+    Service:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID
+        name:
+          type: string
+          description: Название
+        code:
+          type: string
+          description: Код
+        price:
+          type: integer
+          description: Цена
+        description:
+          type: string
+          description: Описание
+        status:
+          type: integer
+          description: Статус (0 - выключена, 1 - включена)
+        expires_at:
+          type: string
+          description: Срок действия
+        city_id:
+          type: integer
+          description: ID города
